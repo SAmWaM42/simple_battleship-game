@@ -2,12 +2,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
+
 
 import javax.swing.*;
 
-class board implements ActionListener  {
-    JFrame screen;
+class board implements ActionListener   {
+    JFrame screen=new JFrame("Battleship");
     final static int max_tiles = 100;
     // board pieces for each player
     tile tiles[] = new tile[max_tiles];
@@ -27,7 +27,9 @@ class board implements ActionListener  {
 
     public board() {
 
-        screen = new JFrame("Battleship");
+       
+       
+
         screen.setVisible(true);
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         screen.setLayout(new GridLayout(1, 1));
@@ -60,6 +62,37 @@ class board implements ActionListener  {
             board_state[i] = 0;
             final_outcome = new JLabel("");
             panes = new JPanel();
+            screen.addKeyListener(
+                new KeyListener() {
+                    public void keyPressed(java.awt.event.KeyEvent e) {
+                        char key = e.getKeyChar();
+                        if (key == 's') {
+                            int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
+                            int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
+                            int close = 0;
+                            for (int i = 0; i < max_tiles; i++) {
+        
+                                if (tiles[i].button.getX() >= x + 60 && tiles[i].button.getX() >= x - 60) {
+                                    if (tiles[i].button.getY() >= y + 60
+                                            && tiles[i].button.getY() >= y - 60) {
+                                        close++;
+                                    }
+        
+                                }
+                            }
+                            final_outcome.setText(String.valueOf(close));
+        
+                        }
+        
+                    }
+        
+                    public void keyReleased(java.awt.event.KeyEvent e) {
+                    };
+        
+                    public void keyTyped(java.awt.event.KeyEvent e) {
+                    };
+        
+                });
             panes.setLayout(new GridLayout(10, 10, 2, 2));
             for (int j = 0; j < max_tiles; j++) {
 
@@ -89,7 +122,6 @@ class board implements ActionListener  {
         pos.gridx = 1;
         pos.gridy = 1;
         pos.gridwidth = (int) overlay.getSize().getWidth();
-        pos.fill = pos.HORIZONTAL;
         pos.insets.bottom = 20;
         overlay.add(info_pane, pos);
         pos.gridx = 1;
@@ -102,44 +134,11 @@ class board implements ActionListener  {
         screen.add(overlay);
         
         screen.setSize(600, 600);
-
+     
     }
  
-    public void check_use()
-    {
-        screen.addKeyListener(
-        new KeyListener() {
-            public void keyPressed(java.awt.event.KeyEvent e) {
-                char key = e.getKeyChar();
-                if (key == 's') {
-                    int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
-                    int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
-                    int close = 0;
-                    for (int i = 0; i < max_tiles; i++) {
+    
 
-                        if (tiles[i].button.getX() >= x + 60 && tiles[i].button.getX() >= x - 60) {
-                            if (tiles[i].button.getY() >= y + 60
-                                    && tiles[i].button.getY() >= y - 60) {
-                                close++;
-                            }
-
-                        }
-                    }
-                    final_outcome.setText(String.valueOf(close));
-                    System.out.println(close);
-
-                }
-
-            }
-
-            public void keyReleased(java.awt.event.KeyEvent e) {
-            };
-
-            public void keyTyped(java.awt.event.KeyEvent e) {
-            };
-
-        });
-    }
     public void change_turn() {
 
         playing = (playing + 1) % 2;
@@ -152,7 +151,7 @@ class board implements ActionListener  {
 
     public String game_outcome(int states[]) {
         String outcome = "";
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i <max_tiles; i++) {
             if (states[i] == 1) {
                 outcome = "lose";
             }
@@ -177,7 +176,6 @@ class board implements ActionListener  {
                     tiles[i].button.setBackground(Color.green);
                     if (players[playing].pieces == 0) {
                         board_state[playing] = 1;
-                        System.out.println(board_state[playing]);
 
                         for (int j = 0; j < max_tiles; j++) {
                             tiles[j].button.setBackground(Color.black);
@@ -189,6 +187,7 @@ class board implements ActionListener  {
                 if (board_state[playing] == 1) {
                     if (source == tiles[i].button) {
                         if (tiles[i].state == 1) {
+                            final_outcome.setText("hit");
                             players[playing].score += 10;
                             states[playing][i] = 2;
                             if (states[playing][i] == 2) {
@@ -197,9 +196,10 @@ class board implements ActionListener  {
                             }
                             score[playing].setText(String.valueOf(players[playing].score));
                             change_turn();
-                        } else {
+                        }
+                         else {
                             players[playing].write = "miss";
-                            score[playing].setText(players[playing].write);
+                            final_outcome.setText(players[playing].write);
                             change_turn();
                         }
                         if (game_outcome(states[playing]) == "win") {
@@ -213,18 +213,20 @@ class board implements ActionListener  {
                 }
 
             }
-            if (tiles[i].state == 2) {
+            if (tiles[i].state == 2) 
+            {
                 tiles[i].button.setBackground(Color.red);
             }
         }
-        
 
+              
     }
 
     
 
     public static void main(String[] args) {
-     new board();
+     board see=new board();
+      
        
     }
 }
