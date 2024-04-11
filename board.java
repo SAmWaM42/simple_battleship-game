@@ -114,7 +114,7 @@ class board implements ActionListener   {
         playLabel.setFont(new Font("Ariel", 0, 30));
         info_pane.add(playLabel);
         info_pane.setSize((int) overlay.getSize().getWidth(), 150);
-        final_outcome.setText("a");
+        final_outcome.setText(" ");
         final_outcome.setFont(new Font("Ariel", 0, 30));
         info_pane.add(final_outcome);
 
@@ -215,7 +215,12 @@ class board implements ActionListener   {
             }
             if (tiles[i].state == 2) 
             {
-                tiles[i].button.setBackground(Color.red);
+                if(playing==0)
+               { tiles[i].button.setBackground(Color.red);}
+               else
+               {
+                tiles[i].button.setBackground(Color.magenta);
+               }
             }
         }
 
